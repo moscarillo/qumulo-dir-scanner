@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useActionData, useLoaderData, useSubmit } from '@remix-run/react';
 import { json } from '@remix-run/node';
 
@@ -21,7 +21,7 @@ type Item = {
   type: string;
 };
 
-const pageTitle = 'Directory Scanner';
+const pageTitle = 'Directory Viewer';
 
 export const meta: MetaFunction = () => ({
   title: `${pageTitle}`,
@@ -30,13 +30,15 @@ export const meta: MetaFunction = () => ({
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: rootStyleSheetUrl }];
 };
+
 export const loader: LoaderFunction = async ({ request }) => {
-  const directoryPath = '/';
+  const directoryPath = '/Users';
   const items = await getDirectory({ directoryPath });
   return json<LoaderData>({
     items,
   });
 };
+
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const directoryPath = formData.get('directoryPath')?.toString() || '';
@@ -55,28 +57,34 @@ const removeLastPathElement = (path: string): string => {
 
 export default function Index() {
   const submit = useSubmit();
-  const loaderData = useLoaderData();
-  const actionData = useActionData();
+
   const formRef = useRef<HTMLFormElement>();
 
+  const loaderData = useLoaderData();
+  const actionData = useActionData();
+  const [directoryPath, setDirectoryPath] = useState<string>('/');
+  const [directorySize, setDirectorySize] = useState<number>();
   const data = actionData ? actionData : loaderData;
-  const directorySize = data.items.reduce((acc: number, curr: Item) => acc + curr.sizeMb, 0);
 
-  const directoryPath = removeLastPathElement(data.items[0].path)
-    ? removeLastPathElement(data.items[0].path)
-    : '/';
-
-  data.items.sort((a: Item, b: Item) => {
-    const nameA = a.name.toLowerCase();
-    const nameB = b.name.toLowerCase();
-    if (nameA < nameB) {
-      return -1;
+  useEffect(() => {
+    if (data.items && data.items.length > 0) {
+      setDirectorySize(data.items.reduce((acc: number, curr: Item) => acc + curr.sizeMb, 0));
+      setDirectoryPath(
+        removeLastPathElement(data.items[0].path) ? removeLastPathElement(data.items[0].path) : '/'
+      );
     }
-    if (nameA > nameB) {
-      return 1;
-    }
-    return 0;
-  });
+    data.items.sort((a: Item, b: Item) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+  }, [data]);
 
   const handleClick = (item: Item) => {
     if (item.type === 'directory') {
@@ -123,9 +131,9 @@ export default function Index() {
           </div>
           <div className="flex shrink-0 text-xl text-white">
             <div className="mr-1">Content Size:</div>
-            {directorySize > 1000
-              ? `${directorySize.toFixed(2)} GB`
-              : `${directorySize.toFixed(2)} MB`}
+            {directorySize && directorySize > 1000
+              ? `${directorySize?.toFixed(2)} GB`
+              : `${directorySize?.toFixed(2)} MB`}
           </div>
         </div>
         <div className="flex items-center justify-center gap-4">

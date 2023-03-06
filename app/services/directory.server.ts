@@ -9,6 +9,7 @@ type Item = {
 
 async function getAll(path: string, fileArr: Item[]) {
   const files = await fs.promises.readdir(path);
+  if (!files || files.length === 0) return [];
   (await Promise.all(
     files.map(async (file: any) => {
       try {
@@ -38,6 +39,5 @@ async function getAll(path: string, fileArr: Item[]) {
 export async function getDirectory(props: { directoryPath: string }): Promise<Item[]> {
   const { directoryPath } = props;
   const data = getAll(directoryPath, []);
-  console.log(data);
   return data;
 }
