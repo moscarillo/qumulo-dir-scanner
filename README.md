@@ -1,4 +1,6 @@
 # Directory Viewer
+![alt text](https://raw.githubusercontent.com/moscarillo/qumulo-dir-scanner/main/public/images/qumulo-logo.png?token=GHSAT0AAAAAAB4ONW4IFNNSQWH3AYEDJBASZAGK2DA "Title")
+
 
 ## What's in the stack
 
@@ -20,13 +22,13 @@
 - Initial setup: _If you just generated this project, this step has been done for you._
 
   ```sh
-  yarn run setup
+  npm install
   ```
 
 - Start dev server:
 
   ```sh
-  yarn run dev
+  npm run dev
   ```
 
 ### Relevant code:
