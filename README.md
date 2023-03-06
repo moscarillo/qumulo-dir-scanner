@@ -1,5 +1,5 @@
 # Directory Viewer
-![alt text](https://raw.githubusercontent.com/moscarillo/qumulo-dir-scanner/main/public/images/qumulo-logo.png?token=GHSAT0AAAAAAB4ONW4IFNNSQWH3AYEDJBASZAGK2DA "Title")
+![alt text](https://github.com/moscarillo/qumulo-dir-scanner/raw/main/public/images/qumulo-file-directory.gif "Title")
 
 
 ## What's in the stack
