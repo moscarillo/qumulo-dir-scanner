@@ -15,19 +15,18 @@ async function getAll(path: string, fileArr: Item[]) {
       try {
         const fileWPath = path === '/' ? `/${file}` : `${path}/${file}`;
         const stats = await fs.promises.stat(fileWPath);
-        const fileObj = {
+        fileArr.push({
           name: file,
           path: fileWPath,
           sizeMb: stats.size / (1024 * 1024),
           type: stats.isDirectory() ? 'directory' : 'file',
-        };
+        });
         //use recursion to get all files in subdirectories
         /*
         if (stats.isDirectory()) {
           await getAll(path + '/' + file, fileArr);
         }
         */
-        fileArr.push(fileObj);
       } catch (e) {
         console.log(e);
       }
